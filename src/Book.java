@@ -1,10 +1,11 @@
 import java.util.concurrent.atomic.AtomicInteger;
 
+
 public class Book {
-    int bookId;
-    String book;
-    String author;
-    String description;
+    private int bookId;
+    private String book;
+    private String author;
+    private String description;
 
 
     public Book(String book,  String author){
