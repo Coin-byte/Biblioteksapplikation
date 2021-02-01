@@ -1,6 +1,8 @@
 public class Main {
 
     public static void main(String[] args) {
-        //Git
+
+    User user = new User("Hoi","101010");
     }
+
 }

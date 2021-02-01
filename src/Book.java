@@ -1,17 +1,14 @@
-import java.util.concurrent.atomic.AtomicInteger;
-
-
 public class Book {
     private int bookId;
-    private String book;
+    private String name;
     private String author;
     private String description;
 
 
-    public Book(String book,  String author){
+    public Book(String name,  String author){
      ///   bookId.incrementAndGet();
         int bookId = 0;
-        this.book = book;
+        this.name = name;
         this.author = author;
         description = "....";
     }
@@ -21,8 +18,8 @@ public class Book {
         /// use regex för att hitta book name och  description
     }
 
-    public void setBook(String book) {
-        this.book = book;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setAuthor(String author) {
@@ -37,8 +34,8 @@ public class Book {
         this.bookId = bookId;
     }
 
-    public String getBook() {
-        return book;
+    public String getName() {
+        return name;
     }
 
     public String getAuthor() {
@@ -57,7 +54,7 @@ public class Book {
     public String toString() {
         return "Book{" +
                 "bookId=" + bookId +
-                ", book='" + book + '\'' +
+                ", book='" + name + '\'' +
                 ", author='" + author + '\'' +
                 ", description='" + description + '\'' +
                 '}';
