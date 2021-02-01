@@ -3,7 +3,7 @@ import java.util.HashMap;
 public class Library {
     private Person currentUser;
     private HashMap<String, Person> allUsers = new HashMap<>();
-    Task testTask = new Task();
+    Task task = new Task();
 
     public Library() {
         //Hårdkodade som tillfälligt test
@@ -13,7 +13,7 @@ public class Library {
         allUsers.put(testUser.getUserName(), testUser);
         //-------------------------------
 
-        currentUser = testTask.login(allUsers);
+        currentUser = task.login(allUsers);
         start();
     }
 
@@ -29,12 +29,12 @@ public class Library {
             }
             System.out.println();
             System.out.println("Type 'quit' to exit, hit enter to continue");
-            cont = testTask.scanString();
+            cont = task.scanString();
         } while (!cont.equalsIgnoreCase("quit"));
     }
 
     public void adminSwitch() {
-        AdminMenu adminMenu = testTask.showMenuAndGetChoice(AdminMenu.values());
+        AdminMenu adminMenu = task.showMenuAndGetChoice(AdminMenu.values());
         switch (adminMenu) {
             case ADD_NEW_BOOK:
                 System.out.println("It works, dags att fylla på med metoder!");
@@ -53,7 +53,7 @@ public class Library {
     }
 
     public void userSwitch() {
-        UserMenu userMenu = testTask.showMenuAndGetChoice(UserMenu.values());
+        UserMenu userMenu = task.showMenuAndGetChoice(UserMenu.values());
         switch (userMenu) {
             case SHOW_ALL_BOOKS:
                 break;
