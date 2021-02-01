@@ -1,16 +1,15 @@
 public class Person {
 
-    protected String userName, passWord;
+    private String userName, passWord;
    // private Library library ;
-    protected boolean isAdmin;
+    private boolean isAdmin;
 
     public Person() {
     }
 
-    public Person(String userName, String passWord, boolean isAdmin) {
+    public Person(String userName, String passWord) {
         this.userName = userName;
         this.passWord = passWord;
-        this.isAdmin = isAdmin;
     }
 
     public String getUserName() {
