@@ -52,6 +52,10 @@ public class User extends Person {
     @Override
     public String toString() {
         return "User: " + super.getUserName() +
-                "\nBorrowed Books:\n" + borrowedBooks.toString().replace("[", "").replace("]", "").replace(",", "").trim();
+                "\nBorrowed Books:\n" + borrowedBooks.toString()
+                .replace("[", "")
+                .replace("]", "")
+                .replace(",", "")
+                .trim();
     }
 }

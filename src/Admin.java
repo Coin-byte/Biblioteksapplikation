@@ -6,6 +6,6 @@ public class Admin extends Person{
 
     @Override
     public String toString() {
-        return "Hidden content";
+        return "Hidden content.";
     }
 }

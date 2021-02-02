@@ -5,8 +5,8 @@ public class Book {
     private String description;
 
 
-    public Book(String name,  String author){
-     ///   bookId.incrementAndGet();
+    public Book(String name, String author) {
+        ///   bookId.incrementAndGet();
         int bookId = 0;
         this.name = name;
         this.author = author;
@@ -14,7 +14,7 @@ public class Book {
     }
 
     //deserialize the line from the file
-    public Book(String line){
+    public Book(String line) {
         /// use regex för att hitta book name och  description
     }
 
@@ -52,6 +52,8 @@ public class Book {
 
     @Override
     public String toString() {
-        return "\n" + getName() + " by: " + getAuthor();
+        return "\n"
+                + getName() + " by: "
+                + getAuthor();
     }
 }
