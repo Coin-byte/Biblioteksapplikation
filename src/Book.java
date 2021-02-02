@@ -1,3 +1,5 @@
+package src;
+
 import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -7,12 +9,12 @@ public class Book {
     private String author;
     private String description;
     private LocalDate date;
-    private boolean  borrow;
+    private boolean  available;
 
 
-    public Book(String book,  String author , String bookId , String description){
+    public Book(String name,  String author , String bookId , String description){
         this.bookId = bookId;
-        this.book = book;
+        this.name = name;
         this.author = author;
         this.description = description;
     }
@@ -21,7 +23,7 @@ public class Book {
     public Book(String line){
         String sub = line;
         bookId = sub.substring(sub.indexOf("bookId=")+7 , sub.indexOf("book=")-1);
-        book = sub.substring( sub.indexOf("book=")+6 , sub.indexOf("author=")-3);
+        name = sub.substring( sub.indexOf("book=")+6 , sub.indexOf("author=")-3);
         author = sub.substring(sub.indexOf("author=")+8 , sub.indexOf("description=") -3);
         description = sub.substring(sub.indexOf("description=")+13 ,sub.indexOf("}")-1 );
     }
@@ -56,6 +58,15 @@ public class Book {
 
     public String getBookId() {
         return bookId;
+    }
+
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
     @Override
