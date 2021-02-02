@@ -21,9 +21,9 @@ public class Library {
         String cont;
         do {
             if (currentUser instanceof Admin) {
-                adminSwitch();
+                adminSwitch((Admin)currentUser);
             } else if (currentUser instanceof User) {
-                userSwitch();
+                userSwitch((User)currentUser);
             } else {
                 System.out.println("Something went wrong..");
             }
@@ -33,7 +33,7 @@ public class Library {
         } while (!cont.equalsIgnoreCase("quit"));
     }
 
-    public void adminSwitch() {
+    public void adminSwitch(Admin currentUser) {
         AdminMenu adminMenu = task.showMenuAndGetChoice(AdminMenu.values());
         switch (adminMenu) {
             case ADD_NEW_BOOK:
@@ -52,7 +52,7 @@ public class Library {
         }
     }
 
-    public void userSwitch() {
+    public void userSwitch(User currentUser) {
         UserMenu userMenu = task.showMenuAndGetChoice(UserMenu.values());
         switch (userMenu) {
             case SHOW_ALL_BOOKS:
@@ -64,6 +64,7 @@ public class Library {
             case SEARCH_LIBRARY:
                 break;
             case SHOW_ALL_BORROWED:
+                currentUser.showAllBorrowed();
                 break;
             case BORROW_NEW_BOOK:
                 break;
