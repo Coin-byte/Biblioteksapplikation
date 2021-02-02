@@ -10,6 +10,7 @@ public class Book {
     private boolean  borrow;
 
 
+
     public Book(String book,  String author , String bookId , String description){
         this.bookId = bookId;
         this.book = book;
@@ -60,11 +61,8 @@ public class Book {
 
     @Override
     public String toString() {
-        return "Book{" +
-                "bookId=" + bookId +
-                ", book='" + name + '\'' +
-                ", author='" + author + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return "\n"
+                + getName() + " by: "
+                + getAuthor();
     }
 }
