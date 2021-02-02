@@ -64,7 +64,7 @@ public class Library {
             case SEARCH_LIBRARY:
                 break;
             case SHOW_ALL_BORROWED:
-                currentUser.showAllBorrowed();
+                //currentUser.showAllBorrowed();
                 break;
             case BORROW_NEW_BOOK:
                 break;
