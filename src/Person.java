@@ -3,8 +3,6 @@ package src;
 public class Person {
 
     private String userName, passWord;
-   // private Library library ;
-    private boolean isAdmin;
 
     public Person() {
     }
@@ -22,7 +20,4 @@ public class Person {
         return passWord;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
-    }
 }

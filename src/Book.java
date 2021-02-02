@@ -12,6 +12,7 @@ public class Book {
     private boolean  available;
 
 
+
     public Book(String name,  String author , String bookId , String description){
         this.bookId = bookId;
         this.name = name;
@@ -71,11 +72,8 @@ public class Book {
 
     @Override
     public String toString() {
-        return "Book{" +
-                "bookId=" + bookId +
-                ", book='" + name + '\'' +
-                ", author='" + author + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return "\n"
+                + getName() + " by: "
+                + getAuthor();
     }
 }

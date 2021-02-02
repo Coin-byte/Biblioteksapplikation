@@ -5,7 +5,7 @@ public enum AdminMenu implements HasDescription{
     REMOVE_BOOK("Remove book from library"),
     DISPLAY_CURRENTLY_BORROWED("Show all borrowed books"),
     DISPLAY_USERS_AND_BOOKS("Display all users"),
-    DISPLAY_BOOKS_USER_HAS("Search for user"), //and display books user has
+    DISPLAY_USER_AND_BOOKS("Search for user"), //and display books user has
     ADD_NEW_USER("Add new user");
 
     private String description;

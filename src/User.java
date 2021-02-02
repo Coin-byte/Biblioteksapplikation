@@ -21,7 +21,9 @@ public class User extends Person {
 
        addBooksToList();
        printBookList();
+
        addBookToBorrowedBooks(new Book("Metro2033","Dmitry Glukhovsky","Dmitry Glukhovsky","Dmitry Glukhovsky"));
+
 
     }
     public void addBooksToList(){
@@ -34,7 +36,6 @@ public class User extends Person {
             System.out.println("Book name: "+ book.getName());
             System.out.println("Author: "+ book.getAuthor());
         }
-
 
 
     }
@@ -51,7 +52,6 @@ public class User extends Person {
          }
     }
 
-
     /// Abbas shit......
 
     public void addBook(List<Book> collect){
@@ -63,4 +63,15 @@ public class User extends Person {
     }
 
     //Abbas shit ......
+
+    @Override
+    public String toString() {
+        return "User: " + super.getUserName() +
+                "\nBorrowed Books:\n" + borrowedBooks.toString()
+                .replace("[", "")
+                .replace("]", "")
+                .replace(",", "")
+                .trim();
+    }
+
 }
