@@ -3,9 +3,49 @@ import java.util.List;
 
 public class User extends Person {
 
-    List<Book> Borrowed = new ArrayList<>();
+    List<Book> borrowedBooks = new ArrayList<>();
+
+
+
+    private List<Book> checkBookInfo = new ArrayList<>();
+
+
+
+
 
     public User(String name, String password) {
-        super(name,password);
+
+        super(name,password,false);
+
+       addBooksToList();
+       printBookList();
+       addBookToBorrowedBooks(new Book("Metro2033","Dmitry Glukhovsky"));
+
+    }
+    public void addBooksToList(){
+        checkBookInfo.add(new Book("Hjärnstark","Anders Hansen"));
+        checkBookInfo.add(new Book("Hobbit","J.R.R. Tolkien"));
+    }
+
+    public void printBookList(){
+        for (Book book:checkBookInfo) {
+            System.out.println("Book name: "+ book.getName());
+            System.out.println("Author: "+ book.getAuthor());
+        }
+
+
+
+    }
+    public void addBookToBorrowedBooks(Book newBook){
+        borrowedBooks.add(newBook);
+        System.out.println(getUserName()+" Have lent the books");
+
+        for (Book book:borrowedBooks) {
+
+
+            System.out.println(book.getName());
+            System.out.println(book.getAuthor());
+
+         }
     }
 }

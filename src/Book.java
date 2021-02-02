@@ -1,28 +1,33 @@
+import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 public class Book {
-    private int bookId;
-    private String book;
+    private String bookId;
+    private String name;
     private String author;
     private String description;
+    private LocalDate date;
+    private boolean  borrow;
 
 
-    public Book(String book,  String author){
-     ///   bookId.incrementAndGet();
-        int bookId = 0;
+    public Book(String book,  String author , String bookId , String description){
+        this.bookId = bookId;
         this.book = book;
         this.author = author;
-        description = "....";
+        this.description = description;
     }
 
     //deserialize the line from the file
     public Book(String line){
-        /// use regex för att hitta book name och  description
+        String sub = line;
+        bookId = sub.substring(sub.indexOf("bookId=")+7 , sub.indexOf("book=")-1);
+        book = sub.substring( sub.indexOf("book=")+6 , sub.indexOf("author=")-3);
+        author = sub.substring(sub.indexOf("author=")+8 , sub.indexOf("description=") -3);
+        description = sub.substring(sub.indexOf("description=")+13 ,sub.indexOf("}")-1 );
     }
 
-    public void setBook(String book) {
-        this.book = book;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setAuthor(String author) {
@@ -33,12 +38,12 @@ public class Book {
         this.description = description;
     }
 
-    public void setBookId(int bookId) {
+    public void setBookId(String bookId) {
         this.bookId = bookId;
     }
 
-    public String getBook() {
-        return book;
+    public String getName() {
+        return name;
     }
 
     public String getAuthor() {
@@ -49,7 +54,7 @@ public class Book {
         return description;
     }
 
-    public int getBookId() {
+    public String getBookId() {
         return bookId;
     }
 
@@ -57,7 +62,7 @@ public class Book {
     public String toString() {
         return "Book{" +
                 "bookId=" + bookId +
-                ", book='" + book + '\'' +
+                ", book='" + name + '\'' +
                 ", author='" + author + '\'' +
                 ", description='" + description + '\'' +
                 '}';
