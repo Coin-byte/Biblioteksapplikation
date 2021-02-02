@@ -1,21 +1,30 @@
+import java.time.LocalDate;
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Book {
-    private int bookId;
+    private String bookId;
     private String name;
     private String author;
     private String description;
+    private LocalDate date;
+    private boolean  borrow;
 
 
-    public Book(String name, String author) {
-        ///   bookId.incrementAndGet();
-        int bookId = 0;
-        this.name = name;
+
+    public Book(String book,  String author , String bookId , String description){
+        this.bookId = bookId;
+        this.book = book;
         this.author = author;
-        description = "....";
+        this.description = description;
     }
 
     //deserialize the line from the file
-    public Book(String line) {
-        /// use regex för att hitta book name och  description
+    public Book(String line){
+        String sub = line;
+        bookId = sub.substring(sub.indexOf("bookId=")+7 , sub.indexOf("book=")-1);
+        book = sub.substring( sub.indexOf("book=")+6 , sub.indexOf("author=")-3);
+        author = sub.substring(sub.indexOf("author=")+8 , sub.indexOf("description=") -3);
+        description = sub.substring(sub.indexOf("description=")+13 ,sub.indexOf("}")-1 );
     }
 
     public void setName(String name) {
@@ -30,7 +39,7 @@ public class Book {
         this.description = description;
     }
 
-    public void setBookId(int bookId) {
+    public void setBookId(String bookId) {
         this.bookId = bookId;
     }
 
@@ -46,7 +55,7 @@ public class Book {
         return description;
     }
 
-    public int getBookId() {
+    public String getBookId() {
         return bookId;
     }
 
