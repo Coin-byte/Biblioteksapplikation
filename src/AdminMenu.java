@@ -1,3 +1,5 @@
+package src;
+
 public enum AdminMenu implements HasDescription{
     ADD_NEW_BOOK("Add new book"),
     REMOVE_BOOK("Remove book from library"),

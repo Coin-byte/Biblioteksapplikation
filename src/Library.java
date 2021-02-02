@@ -1,10 +1,18 @@
+package src;
+
+import javax.xml.namespace.QName;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Library {
     private Person currentUser;
     private HashMap<String, Person> allUsers = new HashMap<>();
-    ArrayList<Book> bookList = new ArrayList<>();
+
+    private List<Book> allBooks = new ArrayList<>();
+
     Task task = new Task();
 
     public Library() {
@@ -121,4 +129,53 @@ public class Library {
     public Person getCurrentUser() {
         return currentUser;
     }
+
+
+    //////////Abbas Shit......................................
+
+    //Låna en bok
+    public void borrow(String title) {
+        List<Book> collect = allBooks.stream().filter(x -> x.getName().matches(title) & x.isAvailable()).collect(Collectors.toList());
+        allBooks.stream().filter(x -> x.getName().matches(title) & x.isAvailable()).forEach(book -> book.setAvailable(false));
+        User user = (User) currentUser;
+        user.addBook(collect);
+    }
+
+    //Tillgängliga böcker
+    public void getAvailableBooks() {
+        allBooks.stream().filter(x -> x.isAvailable()).forEach(System.out::println);
+    }
+    //////////Abbas Shit......................................
+
+
+    //Lämna tillbaka en bok
+
+    public void returnBook(String title) {
+        List<Book> collect = allBooks.stream().filter(x -> x.getName().matches(title) & !x.isAvailable()).collect(Collectors.toList());
+        allBooks.stream().filter(x -> x.getName().matches(title) & !x.isAvailable()).forEach(book -> book.setAvailable(true));
+
+        User user = (User) currentUser;
+        user.removeBook(collect);
+    }
+
+    //Lånade böcker(bibliotekare);
+    public void getBorrowedBooks() {
+        allBooks.stream().filter(x -> !x.isAvailable()).forEach(System.out::println);
+    }
+
+
+    //Ta bort bok, (bibliotekare)
+    public void RemoveBook(String title) {
+        allBooks.stream().filter(x -> x.getName().matches(title)).forEach(x -> allBooks.remove(x));
+    }
+
+    //Skriver ut alla Users och deras lånade böcker.
+    public void printAllUsersAndTheirBooks() {
+        for (String personName : allUsers.keySet()) {
+            System.out.println(allUsers.get(personName));
+            ((User) allUsers.get(personName)).printBookList();
+        }
+    }
+
+//////////Abbas Shit......................................
 }
