@@ -1,8 +1,8 @@
 public class Main {
 
     public static void main(String[] args) {
+        new Library();
 
-    User user = new User("Hoi","101010");
     }
 
 }
