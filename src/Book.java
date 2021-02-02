@@ -52,6 +52,6 @@ public class Book {
 
     @Override
     public String toString() {
-        return "Book Title: " + getName() + " \nAuthor: " + getAuthor() + "\nShort description: " + getDescription() +"\n ";
+        return "\n" + getName() + " by: " + getAuthor();
     }
 }

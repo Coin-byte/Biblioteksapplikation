@@ -20,6 +20,7 @@ public class User extends Person {
        addBooksToList();
        printBookList();
        addBookToBorrowedBooks(new Book("Metro2033","Dmitry Glukhovsky"));
+        addBookToBorrowedBooks(new Book("Test","JRR Tolkien"));
 
     }
     public void addBooksToList(){
@@ -34,7 +35,6 @@ public class User extends Person {
         }
 
 
-
     }
     public void addBookToBorrowedBooks(Book newBook){
         borrowedBooks.add(newBook);
@@ -47,5 +47,11 @@ public class User extends Person {
             System.out.println(book.getAuthor());
 
          }
+    }
+
+    @Override
+    public String toString() {
+        return "User: " + super.getUserName() +
+                "\nBorrowed Books:\n" + borrowedBooks.toString().replace("[", "").replace("]", "").replace(",", "").trim();
     }
 }
