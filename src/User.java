@@ -12,6 +12,15 @@ public class User extends Person {
 
     }
 
+    public void printBookList(){
+        for (Book book:borrowedBooks) {
+            System.out.println("Book name: "+ book.getName());
+            System.out.println("Author: "+ book.getAuthor());
+        }
+
+
+    }
+
     public void addBookToBorrowedBooks(Book newBook){
         borrowedBooks.add(newBook);
         System.out.println(getUserName()+" Have lent the book " + newBook.toString());

@@ -77,7 +77,7 @@ public class Library {
                 findBook();
                 break;
             case SHOW_ALL_BORROWED:
-                currentUser.toString();
+                currentUser.printBookList();
                 break;
             case BORROW_NEW_BOOK:
                 System.out.println("Which book do you want to borrow?");
