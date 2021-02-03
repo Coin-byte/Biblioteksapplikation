@@ -1,5 +1,3 @@
-package src;
-
 import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -18,6 +16,7 @@ public class Book {
         this.name = name;
         this.author = author;
         this.description = description;
+        this.available = true;
     }
 
     //deserialize the line from the file

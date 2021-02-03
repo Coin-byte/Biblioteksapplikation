@@ -1,7 +1,3 @@
-package src;
-
-import javax.xml.namespace.QName;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,9 +17,9 @@ public class Library {
         Admin test = new Admin("admin", "test");
         allUsers.put(test.getUserName(), test);
         allUsers.put(testUser.getUserName(), testUser);
-        bookList.add(new Book("Memoarer", "Marcus Aurelius"));
-        bookList.add(new Book("Sagan om Ringen", "JRR Tolkien"));
-        bookList.add(new Book("Sagan om de två tornen", "JRR Tolkien"));
+        allBooks.add(new Book("Memoarer", "Marcus Aurelius", "test", "test"));
+        allBooks.add(new Book("Sagan om Ringen", "JRR Tolkien", "test", "test"));
+        allBooks.add(new Book("Sagan om de två tornen", "JRR Tolkien", "test", "test"));
         //-------------------------------
 
         currentUser = task.login(allUsers);
@@ -50,13 +46,16 @@ public class Library {
         AdminMenu adminMenu = task.showMenuAndGetChoice(AdminMenu.values());
         switch (adminMenu) {
             case ADD_NEW_BOOK:
-                System.out.println("It works, dags att fylla på med metoder!");
                 break;
             case REMOVE_BOOK:
+                System.out.println("Which title to remove");
+                RemoveBook(inputName());
                 break;
             case DISPLAY_CURRENTLY_BORROWED:
+                getBorrowedBooks();
                 break;
             case DISPLAY_USERS_AND_BOOKS:
+                printAllUsersAndTheirBooks();
                 break;
             case DISPLAY_USER_AND_BOOKS:
                 findUser();
@@ -72,36 +71,46 @@ public class Library {
             case SHOW_ALL_BOOKS:
                 break;
             case SHOW_AVAILABLE_BOOKS:
+                getAvailableBooks();
                 break;
             case SEARCH_LIBRARY:
                 findBook();
                 break;
             case SHOW_ALL_BORROWED:
-                //currentUser.showAllBorrowed();
+                currentUser.toString();
                 break;
             case BORROW_NEW_BOOK:
+                System.out.println("Which book do you want to borrow?");
+                borrow(task.scanString());
                 break;
             case RETURN_BOOK:
+                System.out.println("Which book do you want to return");
+                returnBook(task.scanString());
                 break;
         }
     }
 
+    //TODO Förbättra möget tills imorgon
     public String inputName() {
-        //TODO Förbättra möget, tillåta fler ord?, Splitta upp i mindre delar? Nuvarande RegEx tillåter inte ÅÄÖ
 
-        String searchFor = task.scanString();
-        String searchPatternOne = "[a-zA-Z]+\\s[a-zA-Z]+";
-        String searchPatternTwo = "[a-zA-Z]+";
+        String search = task.scanString();
+        String regexOne = "[a-zA-Z]+\\s[a-zA-Z]+";
+        String regexTwo = "[a-zA-Z]+";
+
         boolean found = false;
-        do if (searchFor.matches(searchPatternOne)) {
-            found = searchFor.matches(searchPatternOne);
-        } else if (searchFor.matches(searchPatternTwo)) {
-            found = searchFor.matches(searchPatternTwo);
+        do if (stringMatch(search, regexOne) || stringMatch(search, regexTwo)) {
+            found = true;
         } else {
             System.out.println("Keep it simple, 1-2 words");
-            searchFor = task.scanString();
+            search = task.scanString();
         } while (!found);
-        return searchFor;
+        return search;
+    }
+
+    public boolean stringMatch(String searchFor, String regEx) {
+        if (searchFor.matches(regEx)) {
+            return true;
+        } else return false;
     }
 
     public void findUser() {
@@ -114,14 +123,13 @@ public class Library {
         }
     }
 
-    public void findBook(){
+    public void findBook() {
         System.out.println("Please enter Title or Author");
         String userInput = inputName();
-        for (Book b : bookList) {
-            if (b.getAuthor().matches(userInput)) {
-                System.out.println("matched author");
-            } else if (b.getName().toLowerCase().contains(userInput.toLowerCase())) {
-                System.out.println(b.toString() + "\nSummary: " + b.getDescription() + "\nAvalible: "); //TODO lägg till att hämta boolean från bok
+        for (Book b : allBooks) {
+            if (b.getAuthor().toLowerCase().contains(userInput.toLowerCase()) ||
+                    b.getName().toLowerCase().contains(userInput.toLowerCase())) {
+                System.out.println(b.toString() + "\nSummary: " + b.getDescription() + "\nAvalible: " + b.isAvailable());
             }
         }
     }
@@ -172,8 +180,10 @@ public class Library {
     //Skriver ut alla Users och deras lånade böcker.
     public void printAllUsersAndTheirBooks() {
         for (String personName : allUsers.keySet()) {
-            System.out.println(allUsers.get(personName));
-            ((User) allUsers.get(personName)).printBookList();
+            if (allUsers.get(personName) instanceof User) {
+                System.out.println(allUsers.get(personName));
+                ((User) allUsers.get(personName)).toString();
+            }
         }
     }
 
