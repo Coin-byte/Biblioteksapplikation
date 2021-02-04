@@ -46,6 +46,7 @@ public class Library {
         AdminMenu adminMenu = task.showMenuAndGetChoice(AdminMenu.values());
         switch (adminMenu) {
             case ADD_NEW_BOOK:
+                addNewBook();
                 break;
             case REMOVE_BOOK:
                 System.out.println("Which title to remove");
@@ -61,6 +62,7 @@ public class Library {
                 findUser();
                 break;
             case ADD_NEW_USER:
+                addNewUser();
                 break;
         }
     }
@@ -188,4 +190,54 @@ public class Library {
     }
 
 //////////Abbas Shit......................................
+
+
+
+
+
+
+    public void addNewBook(){
+        Scanner myObj = new Scanner(System.in);  // Create a Scanner object
+
+        System.out.println("Enter Book title ");
+        String userName = myObj.nextLine();  // Read book title input
+
+        System.out.println("Enter Author's name ");
+        String authorsname  = myObj.nextLine();  // Read book title input
+
+        System.out.println("Enter ISBN");
+        String bookId  = myObj.nextLine();  // Read book title input
+
+        System.out.println("Enter book description: ");
+        String description = myObj.nextLine();  // Read book title input
+
+        Book newBook =  new Book(userName , authorsname , bookId, description);
+        allBooks.add(newBook);
+
+
+        ////this docHandler must be already in the contructor
+        ///  FileReader doc = new FileReader();
+        ///  doc.writeToBooks(newBook.toString());
+    }
+
+
+
+    public void addNewUser(){
+        Scanner myObj = new Scanner(System.in);  // Create a Scanner object
+
+        System.out.println("Enter the new user name  ");
+        String userName = myObj.nextLine();  // Read book title input
+        if(allUsers.containsKey(userName)){
+            System.out.println("Srry! the user already exsist");
+        }
+        else{
+            System.out.println("Enter the new user name  ");
+            String password = myObj.nextLine();  // Read book title input
+            allUsers.put(userName, new User(UserName , password));'
+            System.out.println("the new user were added successfully !!!! ");
+
+        }
+    }
+
+
 }
