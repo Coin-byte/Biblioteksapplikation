@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Book {
+public class Book implements Serializable {
     private String bookId;
     private String name;
     private String author;
