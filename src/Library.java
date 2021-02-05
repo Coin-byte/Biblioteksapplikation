@@ -1,6 +1,6 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+package src;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Library {
@@ -71,6 +71,7 @@ public class Library {
         UserMenu userMenu = task.showMenuAndGetChoice(UserMenu.values());
         switch (userMenu) {
             case SHOW_ALL_BOOKS:
+                printBookList();
                 break;
             case SHOW_AVAILABLE_BOOKS:
                 getAvailableBooks();
@@ -189,6 +190,36 @@ public class Library {
         }
     }
 
+    public void printBookList() {
+        for (Book book : allBooks) {
+            System.out.println("Title: " + book.getName());
+            System.out.println("Author: " + book.getAuthor());
+            System.out.println("Description " + book.getDescription());
+            System.out.println("Available: " + book.isAvailable());
+            System.out.println( " \n ");
+        }
+
+
+    }
+    // Denna metod sorteras efter titel
+    public void sortByName() {
+
+        allBooks.stream().sorted(Comparator.comparing(Book::getName)).forEach(System.out::println);
+
+    }
+
+    //Denna metod sorteras efter Arthor
+    public void sortByAuthor(){
+        allBooks.stream().sorted(Comparator.comparing(Book::getAuthor)).forEach(System.out::println);
+    }
+
+    public void printMyBorrowedBooks(){
+        ((User)currentUser).printAllBorrowedBooks();
+    }
+
+
+
+
 //////////Abbas Shit......................................
 
 
@@ -199,7 +230,7 @@ public class Library {
     public void addNewBook(){
         Scanner myObj = new Scanner(System.in);  // Create a Scanner object
 
-        System.out.println("Enter Book title ");
+        System.out.println("Enter src.Book title ");
         String userName = myObj.nextLine();  // Read book title input
 
         System.out.println("Enter Author's name ");
@@ -233,7 +264,7 @@ public class Library {
         else{
             System.out.println("Enter the new user name  ");
             String password = myObj.nextLine();  // Read book title input
-            allUsers.put(userName, new User(UserName , password));'
+            allUsers.put(userName, new User(userName , password));
             System.out.println("the new user were added successfully !!!! ");
 
         }

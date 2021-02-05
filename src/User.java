@@ -1,3 +1,5 @@
+package src;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +39,12 @@ public class User extends Person {
     }
 
     //Abbas shit ......
+
+    public void printAllBorrowedBooks(){
+        borrowedBooks.stream().forEach(System.out::println);
+    }
+
+
 
     @Override
     public String toString() {
