@@ -16,7 +16,7 @@ public class User extends Person {
 
     public void printBookList(){
         for (Book book:borrowedBooks) {
-            System.out.println("src.Book name: "+ book.getName());
+            System.out.println("Book name: "+ book.getName());
             System.out.println("Author: "+ book.getAuthor());
         }
 
