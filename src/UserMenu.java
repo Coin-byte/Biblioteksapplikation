@@ -1,3 +1,5 @@
+package src;
+
 public enum UserMenu implements HasDescription{
 
     //Descriptions är placeholders, behöver inte vara the final product
