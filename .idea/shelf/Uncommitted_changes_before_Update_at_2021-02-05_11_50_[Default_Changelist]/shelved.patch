@@ -1,0 +1,265 @@
+Index: src/User.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import java.util.ArrayList;\r\nimport java.util.List;\r\n\r\npublic class User extends Person {\r\n\r\n    List<Book> borrowedBooks = new ArrayList<>();\r\n\r\n\r\n    public User(String name, String password) {\r\n\r\n        super(name,password);\r\n\r\n    }\r\n\r\n    public void printBookList(){\r\n        for (Book book:borrowedBooks) {\r\n            System.out.println(\"Book name: \"+ book.getName());\r\n            System.out.println(\"Author: \"+ book.getAuthor());\r\n        }\r\n\r\n\r\n    }\r\n\r\n    public void addBookToBorrowedBooks(Book newBook){\r\n        borrowedBooks.add(newBook);\r\n        System.out.println(getUserName()+\" Have lent the book \" + newBook.toString());\r\n    }\r\n\r\n    /// Abbas shit......\r\n\r\n    public void addBook(List<Book> collect){\r\n        collect.stream().forEach(x ->borrowedBooks.add(x));\r\n    }\r\n\r\n    public void removeBook(List<Book> collect){\r\n        collect.stream().forEach(x ->borrowedBooks.remove(x));\r\n    }\r\n\r\n    //Abbas shit ......\r\n\r\n    @Override\r\n    public String toString() {\r\n        return \"User: \" + super.getUserName() +\r\n                \"\\nBorrowed Books:\\n\" + borrowedBooks.toString()\r\n                .replace(\"[\", \"\")\r\n                .replace(\"]\", \"\")\r\n                .replace(\",\", \"\")\r\n                .trim();\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/User.java b/src/User.java
+--- a/src/User.java	(revision cd7ceab60e8985e99602eaba5ea32d8785640fc3)
++++ b/src/User.java	(date 1612447108004)
+@@ -1,3 +1,5 @@
++package src;
++
+ import java.util.ArrayList;
+ import java.util.List;
+ 
+Index: src/Library.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import java.util.ArrayList;\r\nimport java.util.HashMap;\r\nimport java.util.List;\r\nimport java.util.stream.Collectors;\r\n\r\npublic class Library {\r\n    private Person currentUser;\r\n    private HashMap<String, Person> allUsers = new HashMap<>();\r\n\r\n    private List<Book> allBooks = new ArrayList<>();\r\n\r\n    Task task = new Task();\r\n\r\n    public Library() {\r\n        //Hårdkodade som tillfälligt test\r\n        User testUser = new User(\"User\", \"testUser\");\r\n        Admin test = new Admin(\"admin\", \"test\");\r\n        allUsers.put(test.getUserName(), test);\r\n        allUsers.put(testUser.getUserName(), testUser);\r\n        allBooks.add(new Book(\"Memoarer\", \"Marcus Aurelius\", \"test\", \"test\"));\r\n        allBooks.add(new Book(\"Sagan om Ringen\", \"JRR Tolkien\", \"test\", \"test\"));\r\n        allBooks.add(new Book(\"Sagan om de två tornen\", \"JRR Tolkien\", \"test\", \"test\"));\r\n        //-------------------------------\r\n\r\n        currentUser = task.login(allUsers);\r\n        start();\r\n    }\r\n\r\n    public void start() {\r\n        String cont;\r\n        do {\r\n            if (currentUser instanceof Admin) {\r\n                adminSwitch((Admin) currentUser);\r\n            } else if (currentUser instanceof User) {\r\n                userSwitch((User) currentUser);\r\n            } else {\r\n                System.out.println(\"Something went wrong..\");\r\n            }\r\n            System.out.println();\r\n            System.out.println(\"Type 'quit' to exit, hit enter to continue\");\r\n            cont = task.scanString();\r\n        } while (!cont.equalsIgnoreCase(\"quit\"));\r\n    }\r\n\r\n    public void adminSwitch(Admin currentUser) {\r\n        AdminMenu adminMenu = task.showMenuAndGetChoice(AdminMenu.values());\r\n        switch (adminMenu) {\r\n            case ADD_NEW_BOOK:\r\n                addNewBook();\r\n                break;\r\n            case REMOVE_BOOK:\r\n                System.out.println(\"Which title to remove\");\r\n                RemoveBook(inputName());\r\n                break;\r\n            case DISPLAY_CURRENTLY_BORROWED:\r\n                getBorrowedBooks();\r\n                break;\r\n            case DISPLAY_USERS_AND_BOOKS:\r\n                printAllUsersAndTheirBooks();\r\n                break;\r\n            case DISPLAY_USER_AND_BOOKS:\r\n                findUser();\r\n                break;\r\n            case ADD_NEW_USER:\r\n                addNewUser();\r\n                break;\r\n        }\r\n    }\r\n\r\n    public void userSwitch(User currentUser) {\r\n        UserMenu userMenu = task.showMenuAndGetChoice(UserMenu.values());\r\n        switch (userMenu) {\r\n            case SHOW_ALL_BOOKS:\r\n                break;\r\n            case SHOW_AVAILABLE_BOOKS:\r\n                getAvailableBooks();\r\n                break;\r\n            case SEARCH_LIBRARY:\r\n                findBook();\r\n                break;\r\n            case SHOW_ALL_BORROWED:\r\n                currentUser.printBookList();\r\n                break;\r\n            case BORROW_NEW_BOOK:\r\n                System.out.println(\"Which book do you want to borrow?\");\r\n                borrow(task.scanString());\r\n                break;\r\n            case RETURN_BOOK:\r\n                System.out.println(\"Which book do you want to return\");\r\n                returnBook(task.scanString());\r\n                break;\r\n        }\r\n    }\r\n\r\n    //TODO Förbättra möget tills imorgon\r\n    public String inputName() {\r\n\r\n        String search = task.scanString();\r\n        String regexOne = \"[a-zA-Z]+\\\\s[a-zA-Z]+\";\r\n        String regexTwo = \"[a-zA-Z]+\";\r\n\r\n        boolean found = false;\r\n        do if (stringMatch(search, regexOne) || stringMatch(search, regexTwo)) {\r\n            found = true;\r\n        } else {\r\n            System.out.println(\"Keep it simple, 1-2 words\");\r\n            search = task.scanString();\r\n        } while (!found);\r\n        return search;\r\n    }\r\n\r\n    public boolean stringMatch(String searchFor, String regEx) {\r\n        if (searchFor.matches(regEx)) {\r\n            return true;\r\n        } else return false;\r\n    }\r\n\r\n    public void findUser() {\r\n        System.out.println(\"Please enter a username\");\r\n        Person user = allUsers.get(inputName());\r\n        if (user != null) {\r\n            System.out.println(user.toString());\r\n        } else {\r\n            System.out.println(\"Could not find user\");\r\n        }\r\n    }\r\n\r\n    public void findBook() {\r\n        System.out.println(\"Please enter Title or Author\");\r\n        String userInput = inputName();\r\n        for (Book b : allBooks) {\r\n            if (b.getAuthor().toLowerCase().contains(userInput.toLowerCase()) ||\r\n                    b.getName().toLowerCase().contains(userInput.toLowerCase())) {\r\n                System.out.println(b.toString() + \"\\nSummary: \" + b.getDescription() + \"\\nAvalible: \" + b.isAvailable());\r\n            }\r\n        }\r\n    }\r\n\r\n    public Person getCurrentUser() {\r\n        return currentUser;\r\n    }\r\n\r\n\r\n    //////////Abbas Shit......................................\r\n\r\n    //Låna en bok\r\n    public void borrow(String title) {\r\n        List<Book> collect = allBooks.stream().filter(x -> x.getName().matches(title) & x.isAvailable()).collect(Collectors.toList());\r\n        allBooks.stream().filter(x -> x.getName().matches(title) & x.isAvailable()).forEach(book -> book.setAvailable(false));\r\n        User user = (User) currentUser;\r\n        user.addBook(collect);\r\n    }\r\n\r\n    //Tillgängliga böcker\r\n    public void getAvailableBooks() {\r\n        allBooks.stream().filter(x -> x.isAvailable()).forEach(System.out::println);\r\n    }\r\n    //////////Abbas Shit......................................\r\n\r\n\r\n    //Lämna tillbaka en bok\r\n\r\n    public void returnBook(String title) {\r\n        List<Book> collect = allBooks.stream().filter(x -> x.getName().matches(title) & !x.isAvailable()).collect(Collectors.toList());\r\n        allBooks.stream().filter(x -> x.getName().matches(title) & !x.isAvailable()).forEach(book -> book.setAvailable(true));\r\n\r\n        User user = (User) currentUser;\r\n        user.removeBook(collect);\r\n    }\r\n\r\n    //Lånade böcker(bibliotekare);\r\n    public void getBorrowedBooks() {\r\n        allBooks.stream().filter(x -> !x.isAvailable()).forEach(System.out::println);\r\n    }\r\n\r\n\r\n    //Ta bort bok, (bibliotekare)\r\n    public void RemoveBook(String title) {\r\n        allBooks.stream().filter(x -> x.getName().matches(title)).forEach(x -> allBooks.remove(x));\r\n    }\r\n\r\n    //Skriver ut alla Users och deras lånade böcker.\r\n    public void printAllUsersAndTheirBooks() {\r\n        for (String personName : allUsers.keySet()) {\r\n            if (allUsers.get(personName) instanceof User) {\r\n                System.out.println(allUsers.get(personName));\r\n                ((User) allUsers.get(personName)).toString();\r\n            }\r\n        }\r\n    }\r\n\r\n//////////Abbas Shit......................................\r\n\r\n\r\n\r\n\r\n\r\n\r\n    public void addNewBook(){\r\n        Scanner myObj = new Scanner(System.in);  // Create a Scanner object\r\n\r\n        System.out.println(\"Enter Book title \");\r\n        String userName = myObj.nextLine();  // Read book title input\r\n\r\n        System.out.println(\"Enter Author's name \");\r\n        String authorsname  = myObj.nextLine();  // Read book title input\r\n\r\n        System.out.println(\"Enter ISBN\");\r\n        String bookId  = myObj.nextLine();  // Read book title input\r\n\r\n        System.out.println(\"Enter book description: \");\r\n        String description = myObj.nextLine();  // Read book title input\r\n\r\n        Book newBook =  new Book(userName , authorsname , bookId, description);\r\n        allBooks.add(newBook);\r\n\r\n\r\n        ////this docHandler must be already in the contructor\r\n        ///  FileReader doc = new FileReader();\r\n        ///  doc.writeToBooks(newBook.toString());\r\n    }\r\n\r\n\r\n\r\n    public void addNewUser(){\r\n        Scanner myObj = new Scanner(System.in);  // Create a Scanner object\r\n\r\n        System.out.println(\"Enter the new user name  \");\r\n        String userName = myObj.nextLine();  // Read book title input\r\n        if(allUsers.containsKey(userName)){\r\n            System.out.println(\"Srry! the user already exsist\");\r\n        }\r\n        else{\r\n            System.out.println(\"Enter the new user name  \");\r\n            String password = myObj.nextLine();  // Read book title input\r\n            allUsers.put(userName, new User(UserName , password));'\r\n            System.out.println(\"the new user were added successfully !!!! \");\r\n\r\n        }\r\n    }\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Library.java b/src/Library.java
+--- a/src/Library.java	(revision cd7ceab60e8985e99602eaba5ea32d8785640fc3)
++++ b/src/Library.java	(date 1612448984487)
+@@ -1,6 +1,9 @@
++package src;
++
+ import java.util.ArrayList;
+ import java.util.HashMap;
+ import java.util.List;
++import java.util.Scanner;
+ import java.util.stream.Collectors;
+ 
+ public class Library {
+@@ -231,9 +234,9 @@
+             System.out.println("Srry! the user already exsist");
+         }
+         else{
+-            System.out.println("Enter the new user name  ");
++            System.out.println("Enter a password: ");
+             String password = myObj.nextLine();  // Read book title input
+-            allUsers.put(userName, new User(UserName , password));'
++            allUsers.put(userName, new User(userName , password));
+             System.out.println("the new user were added successfully !!!! ");
+ 
+         }
+Index: src/Book.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import java.time.LocalDate;\r\nimport java.util.concurrent.atomic.AtomicInteger;\r\n\r\npublic class Book {\r\n    private String bookId;\r\n    private String name;\r\n    private String author;\r\n    private String description;\r\n    private LocalDate date;\r\n    private boolean  available;\r\n\r\n\r\n\r\n    public Book(String name,  String author , String bookId , String description){\r\n        this.bookId = bookId;\r\n        this.name = name;\r\n        this.author = author;\r\n        this.description = description;\r\n        this.available = true;\r\n    }\r\n\r\n    //deserialize the line from the file\r\n    public Book(String line){\r\n        String sub = line;\r\n        bookId = sub.substring(sub.indexOf(\"bookId=\")+7 , sub.indexOf(\"book=\")-1);\r\n        name = sub.substring( sub.indexOf(\"book=\")+6 , sub.indexOf(\"author=\")-3);\r\n        author = sub.substring(sub.indexOf(\"author=\")+8 , sub.indexOf(\"description=\") -3);\r\n        description = sub.substring(sub.indexOf(\"description=\")+13 ,sub.indexOf(\"}\")-1 );\r\n    }\r\n\r\n    public void setName(String name) {\r\n        this.name = name;\r\n    }\r\n\r\n    public void setAuthor(String author) {\r\n        this.author = author;\r\n    }\r\n\r\n    public void setDescription(String description) {\r\n        this.description = description;\r\n    }\r\n\r\n    public void setBookId(String bookId) {\r\n        this.bookId = bookId;\r\n    }\r\n\r\n    public String getName() {\r\n        return name;\r\n    }\r\n\r\n    public String getAuthor() {\r\n        return author;\r\n    }\r\n\r\n    public String getDescription() {\r\n        return description;\r\n    }\r\n\r\n    public String getBookId() {\r\n        return bookId;\r\n    }\r\n\r\n\r\n    public boolean isAvailable() {\r\n        return available;\r\n    }\r\n\r\n    public void setAvailable(boolean available) {\r\n        this.available = available;\r\n    }\r\n\r\n    @Override\r\n    public String toString() {\r\n        return \"\\n\"\r\n                + getName() + \" by: \"\r\n                + getAuthor();\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Book.java b/src/Book.java
+--- a/src/Book.java	(revision cd7ceab60e8985e99602eaba5ea32d8785640fc3)
++++ b/src/Book.java	(date 1612447215007)
+@@ -1,3 +1,5 @@
++package src;
++
+ import java.time.LocalDate;
+ import java.util.concurrent.atomic.AtomicInteger;
+ 
+Index: src/Person.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>public class Person {\r\n\r\n    private String userName, passWord;\r\n\r\n    public Person() {\r\n    }\r\n\r\n    public Person(String userName, String passWord) {\r\n        this.userName = userName;\r\n        this.passWord = passWord;\r\n    }\r\n\r\n    public String getUserName() {\r\n        return userName;\r\n    }\r\n\r\n    public String getPassWord() {\r\n        return passWord;\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Person.java b/src/Person.java
+--- a/src/Person.java	(revision cd7ceab60e8985e99602eaba5ea32d8785640fc3)
++++ b/src/Person.java	(date 1612447215032)
+@@ -1,3 +1,5 @@
++package src;
++
+ public class Person {
+ 
+     private String userName, passWord;
+Index: src/Admin.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>public class Admin extends Person{\r\n\r\n    public Admin(String username, String password) {\r\n        super(username, password);\r\n    }\r\n\r\n    @Override\r\n    public String toString() {\r\n        return \"Hidden content.\";\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Admin.java b/src/Admin.java
+--- a/src/Admin.java	(revision cd7ceab60e8985e99602eaba5ea32d8785640fc3)
++++ b/src/Admin.java	(date 1612447215051)
+@@ -1,3 +1,5 @@
++package src;
++
+ public class Admin extends Person{
+ 
+     public Admin(String username, String password) {
+Index: src/Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>public class Main {\r\n\r\n    public static void main(String[] args) {\r\n\r\n    Library l = new Library();\r\n\r\n\r\n\r\n\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Main.java b/src/Main.java
+--- a/src/Main.java	(revision cd7ceab60e8985e99602eaba5ea32d8785640fc3)
++++ b/src/Main.java	(date 1612447215069)
+@@ -1,3 +1,5 @@
++package src;
++
+ public class Main {
+ 
+     public static void main(String[] args) {
+Index: src/DocHandler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import java.io.*;\r\nimport java.util.ArrayList;\r\nimport java.util.HashMap;\r\nimport java.util.List;\r\nimport java.util.Scanner;\r\n\r\n\r\npublic class DocHandler {\r\n\r\n    List<Book> books = new ArrayList<>();\r\n    HashMap<String , String> allUsers = new HashMap<>();\r\n\r\n    List<Book> readFromBook(){\r\n        File myObj = new File(\"Books.txt\"); // Specify the filename\r\n        try {\r\n            Scanner myReader = new Scanner(myObj);\r\n            while (myReader.hasNextLine()) {\r\n                String data = myReader.nextLine();\r\n                books.add(new Book(data));\r\n                System.out.println(data);\r\n            }\r\n            myReader.close();\r\n\r\n        } catch (FileNotFoundException e) {\r\n            System.out.println(\"An error occurred while opening  book file \");\r\n            e.printStackTrace();\r\n        }\r\n\r\n        return books;\r\n    }\r\n\r\n    void writeToBooks(String stringLine){\r\n        File bookfile = new File(\"Books.txt\");\r\n\r\n        try {\r\n\r\n            BufferedWriter bw = new BufferedWriter(new FileWriter(bookfile, true));\r\n            bw.append(stringLine);\r\n            bw.newLine();\r\n\r\n            bw.close();\r\n            System.out.println(\"Successfully wrote to the Books file.\");\r\n        } catch (IOException e) {\r\n            System.out.println(\"An error occurred.\");\r\n            e.printStackTrace();\r\n        }\r\n    }\r\n\r\n\r\n    void writeToUsers(String stringLine){\r\n\r\n        try {\r\n            File userfile = new File(\"Users.txt\");\r\n            BufferedWriter bw = new BufferedWriter(new FileWriter(userfile, true));\r\n            bw.append(stringLine);\r\n            bw.newLine();\r\n\r\n            bw.close();\r\n            System.out.println(\"Successfully wrote to the Users file.\");\r\n        } catch (IOException e) {\r\n            System.out.println(\"An error occurred.\");\r\n            e.printStackTrace();\r\n        }\r\n    }\r\n\r\n\r\n    HashMap<String, String> readFromUser(){\r\n        try {\r\n            File myObj = new File(\"Users.txt\"); // Specify the filename\r\n            Scanner myReader = new Scanner(myObj);\r\n            while (myReader.hasNextLine()) {\r\n                String data = myReader.nextLine();\r\n                String username = data.substring(data.indexOf(\"username=\")+10 , data.indexOf(\"password=\")-3);\r\n                String password = data.substring(data.indexOf(\"password=\")+10 , data.indexOf(\"}\")-2);\r\n                allUsers.put(username , password);\r\n                System.out.println(data);\r\n                System.out.println(username);\r\n                System.out.println(password);\r\n            }\r\n            myReader.close();\r\n\r\n        } catch (FileNotFoundException e) {\r\n            System.out.println(\"An error occurred while opening  User file \");\r\n            e.printStackTrace();\r\n        }\r\n\r\n        return allUsers;\r\n    }\r\n\r\n}\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/DocHandler.java b/src/DocHandler.java
+--- a/src/DocHandler.java	(revision cd7ceab60e8985e99602eaba5ea32d8785640fc3)
++++ b/src/DocHandler.java	(date 1612447215088)
+@@ -1,3 +1,5 @@
++package src;
++
+ import java.io.*;
+ import java.util.ArrayList;
+ import java.util.HashMap;
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"7ac916e8-a1bd-4e7b-98b6-6045a2255ed3\" name=\"Default Changelist\" comment=\"Book updated\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/Library.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/Library.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"ExternalProjectsManager\">\r\n    <system id=\"GRADLE\">\r\n      <state>\r\n        <task path=\"$APPLICATION_HOME_DIR$/jbr/bin\">\r\n          <activation />\r\n        </task>\r\n        <projects_view />\r\n      </state>\r\n    </system>\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"main\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"1nfJEtCgoMs0URjOFIwiPeR33qV\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <ConfirmationsSetting value=\"1\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\r\n    <property name=\"external.system.task.project.file.to.start\" value=\"$PROJECT_DIR$\" />\r\n    <property name=\"last_opened_file_path\" value=\"$PROJECT_DIR$\" />\r\n    <property name=\"project.structure.last.edited\" value=\"Modules\" />\r\n    <property name=\"project.structure.proportion\" value=\"0.15\" />\r\n    <property name=\"project.structure.side.proportion\" value=\"0.2\" />\r\n    <property name=\"restartRequiresConfirmation\" value=\"false\" />\r\n    <property name=\"settings.editor.selected.configurable\" value=\"configurable.group.appearance\" />\r\n  </component>\r\n  <component name=\"RunManager\" selected=\"Application.Main\">\r\n    <configuration name=\"Main\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"src.Main\" />\r\n      <module name=\"Biblioteksapplikation\" />\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"C:/Program Files/JetBrains/IntelliJ IDEA Community Edition 2020.3.1/jbr/bin\" type=\"GradleRunConfiguration\" factoryName=\"Gradle\">\r\n      <ExternalSystemSettings>\r\n        <option name=\"executionName\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"externalSystemIdString\" value=\"GRADLE\" />\r\n        <option name=\"scriptParameters\" value=\"\" />\r\n        <option name=\"taskDescriptions\">\r\n          <list />\r\n        </option>\r\n        <option name=\"taskNames\">\r\n          <list />\r\n        </option>\r\n        <option name=\"vmOptions\" value=\"\" />\r\n      </ExternalSystemSettings>\r\n      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <list>\r\n      <item itemvalue=\"Application.Main\" />\r\n      <item itemvalue=\"Gradle.C:/Program Files/JetBrains/IntelliJ IDEA Community Edition 2020.3.1/jbr/bin\" />\r\n    </list>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Application.Main\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"false\" />\r\n  <component name=\"SvnConfiguration\">\r\n    <configuration />\r\n  </component>\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"7ac916e8-a1bd-4e7b-98b6-6045a2255ed3\" name=\"Default Changelist\" comment=\"\" />\r\n      <created>1611775102820</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1611775102820</updated>\r\n    </task>\r\n    <task id=\"LOCAL−00001\" summary=\"Bara för att\">\r\n      <created>1612286271118</created>\r\n      <option name=\"number\" value=\"LOCAL−00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL−00001\" />\r\n      <updated>1612286271118</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"2\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State>\r\n              <option name=\"COLUMN_ORDER\" />\r\n            </State>\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Bara för att\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Bara för att\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision cd7ceab60e8985e99602eaba5ea32d8785640fc3)
++++ b/.idea/workspace.xml	(date 1612522111498)
+@@ -3,7 +3,17 @@
+   <component name="ChangeListManager">
+     <list default="true" id="7ac916e8-a1bd-4e7b-98b6-6045a2255ed3" name="Default Changelist" comment="Book updated">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Admin.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/AdminMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/AdminMenu.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/Book.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Book.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/DocHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/DocHandler.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/HasDescription.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/HasDescription.java" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/src/Library.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Library.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/Person.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Person.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Task.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/User.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/UserMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/UserMenu.java" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -47,7 +57,7 @@
+     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+     <property name="external.system.task.project.file.to.start" value="$PROJECT_DIR$" />
+-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
++    <property name="last_opened_file_path" value="$PROJECT_DIR$/../TestProject" />
+     <property name="project.structure.last.edited" value="Modules" />
+     <property name="project.structure.proportion" value="0.15" />
+     <property name="project.structure.side.proportion" value="0.2" />
+@@ -76,7 +86,9 @@
+         </option>
+         <option name="vmOptions" value="" />
+       </ExternalSystemSettings>
+-      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
++      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
++      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
++      <DebugAllEnabled>false</DebugAllEnabled>
+       <method v="2" />
+     </configuration>
+     <list>
+@@ -89,7 +101,7 @@
+       </list>
+     </recent_temporary>
+   </component>
+-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="false" />
++  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+   <component name="SvnConfiguration">
+     <configuration />
+   </component>
+@@ -115,13 +127,12 @@
+       <map>
+         <entry key="MAIN">
+           <value>
+-            <State>
+-              <option name="COLUMN_ORDER" />
+-            </State>
++            <State />
+           </value>
+         </entry>
+       </map>
+     </option>
++    <option name="oldMeFiltersMigrated" value="true" />
+   </component>
+   <component name="VcsManagerConfiguration">
+     <MESSAGE value="Bara för att" />
+Index: src/HasDescription.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>public interface HasDescription {\r\n    String getDescription();\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/HasDescription.java b/src/HasDescription.java
+--- a/src/HasDescription.java	(revision cd7ceab60e8985e99602eaba5ea32d8785640fc3)
++++ b/src/HasDescription.java	(date 1612447222898)
+@@ -1,3 +1,5 @@
++package src;
++
+ public interface HasDescription {
+     String getDescription();
+ }
+Index: src/AdminMenu.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>public enum AdminMenu implements HasDescription{\r\n    ADD_NEW_BOOK(\"Add new book\"),\r\n    REMOVE_BOOK(\"Remove book from library\"),\r\n    DISPLAY_CURRENTLY_BORROWED(\"Show all borrowed books\"),\r\n    DISPLAY_USERS_AND_BOOKS(\"Display all users\"),\r\n    DISPLAY_USER_AND_BOOKS(\"Search for user\"), //and display books user has\r\n    ADD_NEW_USER(\"Add new user\");\r\n\r\n    private String description;\r\n\r\n    AdminMenu(String description){\r\n        this.description = description;\r\n    }\r\n\r\n    public String getDescription() {\r\n        return description;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/AdminMenu.java b/src/AdminMenu.java
+--- a/src/AdminMenu.java	(revision cd7ceab60e8985e99602eaba5ea32d8785640fc3)
++++ b/src/AdminMenu.java	(date 1612447222927)
+@@ -1,3 +1,5 @@
++package src;
++
+ public enum AdminMenu implements HasDescription{
+     ADD_NEW_BOOK("Add new book"),
+     REMOVE_BOOK("Remove book from library"),
+Index: src/Task.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import java.util.HashMap;\r\nimport java.util.Scanner;\r\n\r\npublic class Task {\r\n\r\n    public Task() {\r\n    }\r\n\r\n    public Person login(HashMap<String, Person> allUsers) {\r\n        System.out.println(\"Please log in\");\r\n\r\n        Person currentUser = null;\r\n        String usrName;\r\n        String pw;\r\n        do {\r\n            usrName = scanString();\r\n            pw = scanString();\r\n            try {\r\n                currentUser = allUsers.get(usrName);\r\n                if (pw.equals(currentUser.getPassWord())) {\r\n                    System.out.println(\"Login successful\");\r\n                    break;\r\n                } else {\r\n                    System.out.println(\"Username or password is not correct\"); //Egentligen är bara password fel men vill inte förvirra användaren\r\n                }\r\n            } catch (Exception e) {\r\n                System.out.println(\"User not found, try again\");\r\n            }\r\n        } while (currentUser == null || !pw.equals(currentUser.getPassWord()));\r\n        return currentUser;\r\n    }\r\n\r\n    public <T extends HasDescription> T showMenuAndGetChoice(T[] menuItems) {\r\n\r\n        System.out.println(\"Make a choice:\\n--------\");\r\n        int i = 1;\r\n        for (T test : menuItems) {\r\n            System.out.println(i + \" \" + test.getDescription());\r\n            i++;\r\n        }\r\n        int choiceIndex;\r\n        do {\r\n            choiceIndex = scanInt();\r\n            try {\r\n                return menuItems[choiceIndex - 1];\r\n            } catch (Exception e) {\r\n                System.out.println(\"That's not a valid option\");\r\n            }\r\n        } while (choiceIndex > menuItems.length - 1 || choiceIndex < 1);\r\n        return null;\r\n    }\r\n\r\n    public String scanString() {\r\n        Scanner scan = new Scanner(System.in);\r\n        return scan.nextLine();\r\n    }\r\n\r\n    public int scanInt() {\r\n        Scanner scanner = new Scanner(System.in);\r\n        while (!scanner.hasNextInt()) {\r\n            System.out.println(\"Please enter a number\");\r\n            scanner.next();\r\n        }\r\n        return scanner.nextInt();\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Task.java b/src/Task.java
+--- a/src/Task.java	(revision cd7ceab60e8985e99602eaba5ea32d8785640fc3)
++++ b/src/Task.java	(date 1612447222942)
+@@ -1,3 +1,5 @@
++package src;
++
+ import java.util.HashMap;
+ import java.util.Scanner;
+ 
+Index: src/UserMenu.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>public enum UserMenu implements HasDescription{\r\n\r\n    //Descriptions är placeholders, behöver inte vara the final product\r\n    SHOW_ALL_BOOKS(\"Show all books in library.\"),\r\n    SHOW_AVAILABLE_BOOKS(\"Show available books\"),\r\n    SEARCH_LIBRARY(\"Search library\"),\r\n    SHOW_ALL_BORROWED(\"Show currently borrowed\"), //And return date?\r\n    BORROW_NEW_BOOK(\"Borrow\"),\r\n    RETURN_BOOK(\"Return\");\r\n\r\n    private String description;\r\n\r\n    UserMenu(String description){\r\n        this.description = description;\r\n    }\r\n\r\n    public String getDescription() {\r\n        return description;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/UserMenu.java b/src/UserMenu.java
+--- a/src/UserMenu.java	(revision cd7ceab60e8985e99602eaba5ea32d8785640fc3)
++++ b/src/UserMenu.java	(date 1612447222965)
+@@ -1,3 +1,5 @@
++package src;
++
+ public enum UserMenu implements HasDescription{
+ 
+     //Descriptions är placeholders, behöver inte vara the final product
