@@ -1,3 +1,5 @@
+package src;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,7 @@ public class User extends Person {
 
     public void printBookList(){
         for (Book book:borrowedBooks) {
-            System.out.println("Book name: "+ book.getName());
+            System.out.println("src.Book name: "+ book.getName());
             System.out.println("Author: "+ book.getAuthor());
         }
 
@@ -38,9 +40,15 @@ public class User extends Person {
 
     //Abbas shit ......
 
+    public void printAllBorrowedBooks(){
+        borrowedBooks.stream().forEach(System.out::println);
+    }
+
+
+
     @Override
     public String toString() {
-        return "User: " + super.getUserName() +
+        return "src.User: " + super.getUserName() +
                 "\nBorrowed Books:\n" + borrowedBooks.toString()
                 .replace("[", "")
                 .replace("]", "")
