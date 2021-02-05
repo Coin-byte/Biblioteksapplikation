@@ -1,6 +1,7 @@
-import java.io.Serializable;
+package src;
 
-public class Person implements Serializable{
+
+public class Person {
 
     private String userName, passWord;
 

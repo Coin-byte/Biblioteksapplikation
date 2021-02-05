@@ -1,6 +1,9 @@
+package src;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class Library {
@@ -231,9 +234,9 @@ public class Library {
             System.out.println("Srry! the user already exsist");
         }
         else{
-            System.out.println("Enter the new user name  ");
+            System.out.println("Enter a password: ");
             String password = myObj.nextLine();  // Read book title input
-            allUsers.put(userName, new User(UserName , password));'
+            allUsers.put(userName, new User(userName , password));
             System.out.println("the new user were added successfully !!!! ");
 
         }
