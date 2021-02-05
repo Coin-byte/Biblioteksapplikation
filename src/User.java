@@ -48,7 +48,7 @@ public class User extends Person {
 
     @Override
     public String toString() {
-        return "src.User: " + super.getUserName() +
+        return "User: " + super.getUserName() +
                 "\nBorrowed Books:\n" + borrowedBooks.toString()
                 .replace("[", "")
                 .replace("]", "")
