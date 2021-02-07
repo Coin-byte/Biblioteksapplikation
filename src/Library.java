@@ -64,6 +64,11 @@ public class Library {
             case ADD_NEW_USER:
                 addNewUser();
                 break;
+            case DELETE_A_USER:
+                deleteUser();
+                break;
+            case DISPLAY_CERTAIN_USERS_BORROWED_BOOK:
+                break;
         }
     }
 
@@ -269,6 +274,21 @@ public class Library {
 
         }
     }
+
+    /////
+    public void deleteUser(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("please enter the user name : ");
+        String  username = scanner.nextLine();
+
+        if(allUsers.containsKey(username)){
+            User deleteduser = (User) allUsers.remove(username);
+            System.out.println("the user " + username + "  were deleted sucessfully");
+        }  else{
+            System.out.println("use " + username +" does not exsist");
+        }
+    }
+
 
 
 }
