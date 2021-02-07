@@ -50,7 +50,7 @@ public class User extends Person {
 
             }
         };
-
+         timer.schedule(task,30000);
     }
     //Abbas shit ......
 
