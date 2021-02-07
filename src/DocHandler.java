@@ -11,7 +11,7 @@ public class DocHandler {
     HashMap<String , String> allUsers = new HashMap<>();
 
 
-    public static void writeToBooksFile(Object object) {
+    public void writeToBooksFile(Object object) {
         FileOutputStream fileOutputStream = null;
         ObjectOutputStream obj = null;
 
@@ -28,14 +28,14 @@ public class DocHandler {
 
 
 
-    public static void writeToUsersFile(Object object) {
+    public void writeToUsersFile(HashMap<String, Person> allUsers) {
         FileOutputStream fileOutputStream = null;
         ObjectOutputStream obj = null;
 
         try {
             fileOutputStream = new FileOutputStream("AllUsers.ser", false);
             obj = new ObjectOutputStream(fileOutputStream);
-            obj.writeObject(object);
+            obj.writeObject(allUsers);
             obj.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -45,7 +45,7 @@ public class DocHandler {
 
 
 
-    public static Object readObject(String fileName){
+    public Object readObject(String fileName){
 
         ObjectInputStream objectinputstream = null;
 
@@ -59,7 +59,7 @@ public class DocHandler {
 
             object = objectinputstream.readObject();
 
-            objectinputstream .close();
+            objectinputstream.close();
 
         } catch (Exception e) {
 

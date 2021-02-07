@@ -1,29 +1,37 @@
 package src;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Library {
     private Person currentUser;
-    private HashMap<String, Person> allUsers = new HashMap<>();
-
-    private List<Book> allBooks = new ArrayList<>();
+    private HashMap<String, Person> allUsers;
+    private List<Book> allBooks;
+    private Pattern namePattern = Pattern.compile("[a-zA-Z]+\\s[a-zA-Z]+|[a-zA-Z]+");
 
     Task task = new Task();
+    DocHandler docHandler = new DocHandler();
 
     public Library() {
+        allBooks = (List<Book>) docHandler.readObject("AllBooks.ser");
+        allUsers = (HashMap<String, Person>) docHandler.readObject("AllUsers.ser");
         //Hårdkodade som tillfälligt test
-        User testUser = new User("User", "testUser");
-        Admin test = new Admin("admin", "test");
+
+        /*User testUser = new User("User", "testUser");
+        Admin test = new Admin("Admin", "testAdmin");
         allUsers.put(test.getUserName(), test);
         allUsers.put(testUser.getUserName(), testUser);
-        allBooks.add(new Book("Memoarer", "Marcus Aurelius", "test", "test"));
-        allBooks.add(new Book("Sagan om Ringen", "JRR Tolkien", "test", "test"));
-        allBooks.add(new Book("Sagan om de två tornen", "JRR Tolkien", "test", "test"));
-        //-------------------------------
+        docHandler.writeToUsersFile(allUsers);*/
 
-        currentUser = task.login(allUsers);
-        start();
+        //-------------------------------
+        boolean running = true;
+        do{
+            currentUser = task.login(allUsers);
+            start();
+        }while(running);
+
     }
 
     public void start() {
@@ -37,7 +45,7 @@ public class Library {
                 System.out.println("Something went wrong..");
             }
             System.out.println();
-            System.out.println("Type 'quit' to exit, hit enter to continue");
+            System.out.println("Type 'quit' to log out, hit enter to continue");
             cont = task.scanString();
         } while (!cont.equalsIgnoreCase("quit"));
     }
@@ -70,6 +78,7 @@ public class Library {
             case DISPLAY_CERTAIN_USERS_BORROWED_BOOK:
                 break;
         }
+        saveAllBooks();
     }
 
     public void userSwitch(User currentUser) {
@@ -96,29 +105,19 @@ public class Library {
                 returnBook(task.scanString());
                 break;
         }
+        saveAllBooks();
+        saveAllUsers();
     }
 
-    //TODO Förbättra möget tills imorgon
     public String inputName() {
-
-        String search = task.scanString();
-        String regexOne = "[a-zA-Z]+\\s[a-zA-Z]+";
-        String regexTwo = "[a-zA-Z]+";
-
-        boolean found = false;
-        do if (stringMatch(search, regexOne) || stringMatch(search, regexTwo)) {
-            found = true;
-        } else {
-            System.out.println("Keep it simple, 1-2 words");
+        String search;
+        boolean found;
+        do{
             search = task.scanString();
-        } while (!found);
+            Matcher m = namePattern.matcher(search);
+            found = m.find();
+        }while(!found);
         return search;
-    }
-
-    public boolean stringMatch(String searchFor, String regEx) {
-        if (searchFor.matches(regEx)) {
-            return true;
-        } else return false;
     }
 
     public void findUser() {
@@ -140,10 +139,6 @@ public class Library {
                 System.out.println(b.toString() + "\nSummary: " + b.getDescription() + "\nAvalible: " + b.isAvailable());
             }
         }
-    }
-
-    public Person getCurrentUser() {
-        return currentUser;
     }
 
 
@@ -182,7 +177,8 @@ public class Library {
 
     //Ta bort bok, (bibliotekare)
     public void RemoveBook(String title) {
-        allBooks.stream().filter(x -> x.getName().matches(title)).forEach(x -> allBooks.remove(x));
+        allBooks.removeIf(b -> b.getName().matches(title));
+        //allBooks.stream().filter(x -> x.getName().matches(title)).forEach(x -> allBooks.remove(x));
     }
 
     //Skriver ut alla Users och deras lånade böcker.
@@ -200,8 +196,7 @@ public class Library {
             System.out.println("Title: " + book.getName());
             System.out.println("Author: " + book.getAuthor());
             System.out.println("Description " + book.getDescription());
-            System.out.println("Available: " + book.isAvailable());
-            System.out.println( " \n ");
+            System.out.println("Available: " + book.isAvailable() + "\n");
         }
 
 
@@ -235,7 +230,7 @@ public class Library {
     public void addNewBook(){
         Scanner myObj = new Scanner(System.in);  // Create a Scanner object
 
-        System.out.println("Enter src.Book title ");
+        System.out.println("Enter Book title ");
         String userName = myObj.nextLine();  // Read book title input
 
         System.out.println("Enter Author's name ");
@@ -289,6 +284,12 @@ public class Library {
         }
     }
 
+    public void saveAllBooks(){
+        docHandler.writeToBooksFile(allBooks);
+    }
+    public void saveAllUsers(){
+        docHandler.writeToUsersFile(allUsers);
+    }
 
 
 }
