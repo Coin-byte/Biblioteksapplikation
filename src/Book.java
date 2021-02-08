@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Book implements Serializable {
+    private static final long serialVersionUID = 3L;
     private String bookId;
     private String name;
     private String author;
