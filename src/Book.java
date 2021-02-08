@@ -1,4 +1,4 @@
-package src;
+
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -10,7 +10,7 @@ public class Book implements Serializable {
     private String name;
     private String author;
     private String description;
-    private LocalDate date;
+    private LocalDate returnDate;
     private boolean  available;
 
 
@@ -62,6 +62,14 @@ public class Book implements Serializable {
 
     public String getBookId() {
         return bookId;
+    }
+
+    public LocalDate getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(LocalDate date) {
+        this.returnDate = date;
     }
 
 

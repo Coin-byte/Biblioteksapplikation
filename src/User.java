@@ -1,11 +1,14 @@
-package src;
+
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class User extends Person {
 
@@ -22,6 +25,11 @@ public class User extends Person {
         for (Book book : borrowedBooks) {
             System.out.println("Book name: " + book.getName());
             System.out.println("Author: " + book.getAuthor());
+            if(DAYS.between(LocalDate.now(), book.getReturnDate()) >= 0){
+                System.out.println("Return in " + DAYS.between(LocalDate.now(), book.getReturnDate()) + " days.");
+            }else{
+                System.out.println(book.getName() + " is late, return it immediately!");
+            }
         }
     }
 
@@ -31,15 +39,16 @@ public class User extends Person {
         collect.stream().forEach(x -> {
             borrowedBooks.add(x);
             System.out.println("The book borrowed successfully!");
-            reminder(x);
+            //reminder(x);
         });
     }
 
-    public void removeBook(List<Book> collect) {
-        collect.stream().forEach(x -> borrowedBooks.remove(x));
+    public void removeBook(Book book) {
+        borrowedBooks.removeIf(b -> b.getName().matches(book.getName()));
+        System.out.println("Returned " + book.getName() + " to the library");
     }
 
-    public void reminder(Book book) {
+/*    public void reminder(Book book) {
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
@@ -51,7 +60,12 @@ public class User extends Person {
             }
         };
          timer.schedule(task,30000);
+    }*/
+
+    public List<Book> getBorrowedBooks() {
+        return borrowedBooks;
     }
+
     //Abbas shit ......
 
     public void printAllBorrowedBooks() {
