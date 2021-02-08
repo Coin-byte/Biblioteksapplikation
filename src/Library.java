@@ -1,9 +1,12 @@
-package src;
 
+
+import java.time.LocalDate;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class Library {
     private Person currentUser;
@@ -19,18 +22,21 @@ public class Library {
         allUsers = (HashMap<String, Person>) docHandler.readObject("AllUsers.ser");
         //Hårdkodade som tillfälligt test
 
-        /*User testUser = new User("User", "testUser");
-        Admin test = new Admin("Admin", "testAdmin");
-        allUsers.put(test.getUserName(), test);
-        allUsers.put(testUser.getUserName(), testUser);
-        docHandler.writeToUsersFile(allUsers);*/
+        //User testUser = new User("User", "testUser");
+        //Admin test = new Admin("Admin", "testAdmin");
+        //allUsers.put(test.getUserName(), test);
+        //allUsers.put(testUser.getUserName(), testUser);
+        //docHandler.writeToUsersFile(allUsers);
 
         //-------------------------------
         boolean running = true;
-        do{
+        do {
             currentUser = task.login(allUsers);
+            if(currentUser instanceof User){
+                reminder((User) currentUser);
+            }
             start();
-        }while(running);
+        } while (running);
 
     }
 
@@ -79,6 +85,7 @@ public class Library {
                 break;
         }
         saveAllBooks();
+        saveAllUsers();
     }
 
     public void userSwitch(User currentUser) {
@@ -86,6 +93,12 @@ public class Library {
         switch (userMenu) {
             case SHOW_ALL_BOOKS:
                 printBookList();
+                break;
+            case SORT_BY_AUTHOR:
+                sortByAuthor();
+                break;
+            case SORT_BY_TITLE:
+                sortByName();
                 break;
             case SHOW_AVAILABLE_BOOKS:
                 getAvailableBooks();
@@ -112,11 +125,11 @@ public class Library {
     public String inputName() {
         String search;
         boolean found;
-        do{
+        do {
             search = task.scanString();
             Matcher m = namePattern.matcher(search);
             found = m.find();
-        }while(!found);
+        } while (!found);
         return search;
     }
 
@@ -147,7 +160,10 @@ public class Library {
     //Låna en bok
     public void borrow(String title) {
         List<Book> collect = allBooks.stream().filter(x -> x.getName().matches(title) & x.isAvailable()).collect(Collectors.toList());
-        allBooks.stream().filter(x -> x.getName().matches(title) & x.isAvailable()).forEach(book -> book.setAvailable(false));
+        allBooks.stream().filter(x -> x.getName().matches(title) & x.isAvailable()).forEach(book -> {
+            book.setAvailable(false);
+            book.setReturnDate(generateReturnDate());
+        });
         User user = (User) currentUser;
         user.addBook(collect);
     }
@@ -166,7 +182,7 @@ public class Library {
         allBooks.stream().filter(x -> x.getName().matches(title) & !x.isAvailable()).forEach(book -> book.setAvailable(true));
 
         User user = (User) currentUser;
-        user.removeBook(collect);
+        collect.stream().forEach(x -> user.removeBook(x));
     }
 
     //Lånade böcker(bibliotekare);
@@ -201,6 +217,7 @@ public class Library {
 
 
     }
+
     // Denna metod sorteras efter titel
     public void sortByName() {
 
@@ -209,40 +226,34 @@ public class Library {
     }
 
     //Denna metod sorteras efter Arthor
-    public void sortByAuthor(){
+    public void sortByAuthor() {
         allBooks.stream().sorted(Comparator.comparing(Book::getAuthor)).forEach(System.out::println);
     }
 
-    public void printMyBorrowedBooks(){
-        ((User)currentUser).printAllBorrowedBooks();
+    public void printMyBorrowedBooks() {
+        ((User) currentUser).printAllBorrowedBooks();
     }
-
-
 
 
 //////////Abbas Shit......................................
 
 
-
-
-
-
-    public void addNewBook(){
+    public void addNewBook() {
         Scanner myObj = new Scanner(System.in);  // Create a Scanner object
 
         System.out.println("Enter Book title ");
         String userName = myObj.nextLine();  // Read book title input
 
         System.out.println("Enter Author's name ");
-        String authorsname  = myObj.nextLine();  // Read book title input
+        String authorsname = myObj.nextLine();  // Read book title input
 
         System.out.println("Enter ISBN");
-        String bookId  = myObj.nextLine();  // Read book title input
+        String bookId = myObj.nextLine();  // Read book title input
 
         System.out.println("Enter book description: ");
         String description = myObj.nextLine();  // Read book title input
 
-        Book newBook =  new Book(userName , authorsname , bookId, description);
+        Book newBook = new Book(userName, authorsname, bookId, description);
         allBooks.add(newBook);
 
 
@@ -252,44 +263,61 @@ public class Library {
     }
 
 
-
-    public void addNewUser(){
+    public void addNewUser() {
         Scanner myObj = new Scanner(System.in);  // Create a Scanner object
 
         System.out.println("Enter the new user name  ");
         String userName = myObj.nextLine();  // Read book title input
-        if(allUsers.containsKey(userName)){
+        if (allUsers.containsKey(userName)) {
             System.out.println("Srry! the user already exsist");
-        }
-        else{
+        } else {
             System.out.println("Enter the new user name  ");
             String password = myObj.nextLine();  // Read book title input
-            allUsers.put(userName, new User(userName , password));
+            allUsers.put(userName, new User(userName, password));
             System.out.println("the new user were added successfully !!!! ");
 
         }
     }
 
     /////
-    public void deleteUser(){
+    public void deleteUser() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("please enter the user name : ");
-        String  username = scanner.nextLine();
+        String username = scanner.nextLine();
 
-        if(allUsers.containsKey(username)){
+        if (allUsers.containsKey(username)) {
             User deleteduser = (User) allUsers.remove(username);
             System.out.println("the user " + username + "  were deleted sucessfully");
-        }  else{
-            System.out.println("use " + username +" does not exsist");
+        } else {
+            System.out.println("use " + username + " does not exsist");
         }
     }
 
-    public void saveAllBooks(){
+    public void saveAllBooks() {
         docHandler.writeToBooksFile(allBooks);
     }
-    public void saveAllUsers(){
+
+    public void saveAllUsers() {
         docHandler.writeToUsersFile(allUsers);
     }
 
+    public void reminder(User currentUser) {
+        checkReturnDate(currentUser);
+        System.out.println("Hit anything to continue..");
+        task.scanString();
+    }
 
+    public LocalDate generateReturnDate() {
+        LocalDate today = LocalDate.now();
+        return today.minusDays(3); //Tillfälligt för debug, ändra till plusWeeks(2) för 2 veckor
+    }
+
+    public void checkReturnDate(User currentUser) {
+        List<Book> returnDates = currentUser.getBorrowedBooks();
+        LocalDate today = LocalDate.now();
+        if (returnDates != null) {
+            returnDates.stream().filter(b -> b.getReturnDate().isBefore(today)).forEach(x -> System.out.println("Return " + x.getName() + " to the library"));
+            //ska skrivas ut om boken är försenad
+        }
+    }
 }
