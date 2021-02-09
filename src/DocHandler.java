@@ -68,7 +68,6 @@ public class DocHandler {
         }
 
         return object;
-
     }
 
 }

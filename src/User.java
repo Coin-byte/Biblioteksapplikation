@@ -24,7 +24,7 @@ public class User extends Person {
     public void printBookList() {
         for (Book book : borrowedBooks) {
             System.out.println("Book name: " + book.getName());
-            System.out.println("Author: " + book.getAuthor());
+            System.out.println("Author: " + book.getAuthor() + "\n");
             if(DAYS.between(LocalDate.now(), book.getReturnDate()) >= 0){
                 System.out.println("Return in " + DAYS.between(LocalDate.now(), book.getReturnDate()) + " days.");
             }else{
