@@ -13,6 +13,7 @@ public class Library {
     private HashMap<String, Person> allUsers;
     private List<Book> allBooks;
     private Pattern namePattern = Pattern.compile("[a-zA-Z]+\\s[a-zA-Z]+|[a-zA-Z]+");
+    LoginPage login = new LoginPage();
 
     Task task = new Task();
     DocHandler docHandler = new DocHandler();
@@ -20,6 +21,8 @@ public class Library {
     public Library() {
         allBooks = (List<Book>) docHandler.readObject("AllBooks.ser");
         allUsers = (HashMap<String, Person>) docHandler.readObject("AllUsers.ser");
+
+        //currentUser = login.login(allUsers);
         //Hårdkodade som tillfälligt test
 
         //User testUser = new User("User", "testUser");
@@ -30,13 +33,21 @@ public class Library {
 
         //-------------------------------
         boolean running = true;
-        do {
-            currentUser = task.login(allUsers);
+       do {
+            try {
+            //currentUser = task.login(allUsers);
+            currentUser = login.login(allUsers);
             if(currentUser instanceof User){
                 reminder((User) currentUser);
             }
-            start();
-        } while (running);
+            if(currentUser != null){
+                start();
+            }
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+       } while (running);
 
     }
 
@@ -115,7 +126,7 @@ public class Library {
                 break;
             case RETURN_BOOK:
                 System.out.println("Which book do you want to return");
-                returnBook(task.scanString());
+                returnBook(task.scanString(), currentUser);
                 break;
         }
         saveAllBooks();
@@ -177,12 +188,20 @@ public class Library {
 
     //Lämna tillbaka en bok
 
-    public void returnBook(String title) {
-        List<Book> collect = allBooks.stream().filter(x -> x.getName().matches(title) & !x.isAvailable()).collect(Collectors.toList());
-        allBooks.stream().filter(x -> x.getName().matches(title) & !x.isAvailable()).forEach(book -> book.setAvailable(true));
+    public void returnBook(String title, User user) {
 
-        User user = (User) currentUser;
-        collect.stream().forEach(x -> user.removeBook(x));
+        List<Book> collect = user.getBorrowedBooks().stream().filter(x -> x.getName().matches(title)).collect(Collectors.toList());
+        if(!collect.isEmpty()){
+            setAvalibleTrue(title);
+            System.out.println("Returned " + title + " to the library.\n");
+        }else {
+            System.out.println("Nothing to return");
+        }
+        collect.stream().forEach(x -> user.getBorrowedBooks().removeIf(y -> y.getName().matches(title)));
+    }
+
+    public void setAvalibleTrue(String title){
+        allBooks.stream().filter(x -> x.getName().matches(title) & !x.isAvailable()).forEach(book -> book.setAvailable(true));
     }
 
     //Lånade böcker(bibliotekare);
@@ -286,10 +305,12 @@ public class Library {
         String username = scanner.nextLine();
 
         if (allUsers.containsKey(username)) {
-            User deleteduser = (User) allUsers.remove(username);
-            System.out.println("the user " + username + "  were deleted sucessfully");
+            User person = (User)allUsers.get(username);
+            person.getBorrowedBooks().stream().forEach(x-> setAvalibleTrue(x.getName()));
+            allUsers.remove(username);
+            System.out.println("Successfully deleted: " + username);
         } else {
-            System.out.println("use " + username + " does not exsist");
+            System.out.println(username + " does not exsist");
         }
     }
 
@@ -319,5 +340,13 @@ public class Library {
             returnDates.stream().filter(b -> b.getReturnDate().isBefore(today)).forEach(x -> System.out.println("Return " + x.getName() + " to the library"));
             //ska skrivas ut om boken är försenad
         }
+    }
+
+    public HashMap<String, Person> getAllUsers() {
+        return allUsers;
+    }
+
+    public void setCurrentUser(Person currentUser) {
+        this.currentUser = currentUser;
     }
 }
