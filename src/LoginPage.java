@@ -16,9 +16,11 @@ public class LoginPage implements ActionListener {
     HashMap<String, Person> logininfo;
     Person currentUser;
 
+    public Person getCurrentUser() {
+        return currentUser;
+    }
 
     LoginPage() {
-
 
 
         userIDLabel.setBounds(50, 100, 75, 25);
@@ -49,9 +51,12 @@ public class LoginPage implements ActionListener {
         frame.setSize(420, 420);
         frame.setLayout(null);
         frame.setVisible(true);
+
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
     }
 
-    public Person login(HashMap<String, Person> logininfoFromLib){
+    public Person login(HashMap<String, Person> logininfoFromLib) {
         logininfo = logininfoFromLib;
 
         return currentUser;
@@ -75,7 +80,8 @@ public class LoginPage implements ActionListener {
                     messageLabel.setForeground(Color.green);
                     messageLabel.setText("Login successful");
                     currentUser = logininfo.get(userID);
-                    //frame.dispose();
+                    frame.dispose();
+                    WelcomePage n = new WelcomePage();
                 } else {
                     messageLabel.setForeground(Color.red);
                     messageLabel.setText("Wrong password");
@@ -87,4 +93,47 @@ public class LoginPage implements ActionListener {
             }
         }
     }
+
+
+    //-----------------------------------------------------------------------------------------------------
+    class WelcomePage implements ActionListener {
+
+        JFrame frame = new JFrame();
+        JLabel messageLabel = new JLabel();
+        JLabel UsermessageLabel = new JLabel();
+
+
+        public WelcomePage() {
+            messageLabel.setBounds(85, 40, 250, 35);
+            messageLabel.setFont(new Font(null, Font.ITALIC, 25));
+            messageLabel.setText("Program is running!");
+            messageLabel.setForeground(Color.green);
+
+            UsermessageLabel.setBounds(85, 85, 250, 35);
+            UsermessageLabel.setFont(new Font(null, Font.ITALIC, 25));
+            UsermessageLabel.setText("Loged in as: " + currentUser.getUserName());
+            UsermessageLabel.setForeground(Color.red);
+
+
+
+
+            frame.add(messageLabel);
+            frame.add(UsermessageLabel);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(420, 200);
+            frame.setLayout(null);
+            frame.setVisible(true);
+
+            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+            frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+
+        }
+    }
 }
+
+

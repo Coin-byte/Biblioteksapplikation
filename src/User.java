@@ -28,7 +28,7 @@ public class User extends Person {
             if(DAYS.between(LocalDate.now(), book.getReturnDate()) >= 0){
                 System.out.println("Return in " + DAYS.between(LocalDate.now(), book.getReturnDate()) + " days.");
             }else{
-                System.out.println(book.getName() + " is late, return it immediately!");
+                System.out.println(book.getName() + " is late, return it immediately! \n");
             }
         }
     }
@@ -39,7 +39,6 @@ public class User extends Person {
         collect.stream().forEach(x -> {
             borrowedBooks.add(x);
             System.out.println("The book borrowed successfully!");
-            //reminder(x);
         });
     }
 
