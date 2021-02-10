@@ -22,20 +22,10 @@ public class Library {
         allBooks = (List<Book>) docHandler.readObject("AllBooks.ser");
         allUsers = (HashMap<String, Person>) docHandler.readObject("AllUsers.ser");
 
-        //currentUser = login.login(allUsers);
-        //Hårdkodade som tillfälligt test
-
-        //User testUser = new User("User", "testUser");
-        //Admin test = new Admin("Admin", "testAdmin");
-        //allUsers.put(test.getUserName(), test);
-        //allUsers.put(testUser.getUserName(), testUser);
-        //docHandler.writeToUsersFile(allUsers);
-
         //-------------------------------
         boolean running = true;
        do {
             try {
-            //currentUser = task.login(allUsers);
             currentUser = login.login(allUsers);
             if(currentUser instanceof User){
                 reminder((User) currentUser);
@@ -70,6 +60,9 @@ public class Library {
     public void adminSwitch(Admin currentUser) {
         AdminMenu adminMenu = task.showMenuAndGetChoice(AdminMenu.values());
         switch (adminMenu) {
+            case SHOW_ALL_BOOKS:
+                printBookList();
+                break;
             case ADD_NEW_BOOK:
                 addNewBook();
                 break;
@@ -92,8 +85,7 @@ public class Library {
             case DELETE_A_USER:
                 deleteUser();
                 break;
-            case DISPLAY_CERTAIN_USERS_BORROWED_BOOK:
-                break;
+
         }
         saveAllBooks();
         saveAllUsers();
@@ -176,7 +168,12 @@ public class Library {
             book.setReturnDate(generateReturnDate());
         });
         User user = (User) currentUser;
-        user.addBook(collect);
+        if (!collect.isEmpty()){
+            user.addBook(collect);
+        }else{
+            System.out.println("\n Title not found!\n");
+        }
+
     }
 
     //Tillgängliga böcker
@@ -212,16 +209,25 @@ public class Library {
 
     //Ta bort bok, (bibliotekare)
     public void RemoveBook(String title) {
-        allBooks.removeIf(b -> b.getName().matches(title));
-        //allBooks.stream().filter(x -> x.getName().matches(title)).forEach(x -> allBooks.remove(x));
+
+        if (allBooks.removeIf(b -> b.getName().matches(title))){
+            allBooks.removeIf(b -> b.getName().matches(title));
+            System.out.println("Deleted "+ title );
+        }else{
+            System.out.println("Not found!");
+        }
+
+
     }
 
     //Skriver ut alla Users och deras lånade böcker.
     public void printAllUsersAndTheirBooks() {
         for (String personName : allUsers.keySet()) {
             if (allUsers.get(personName) instanceof User) {
-                System.out.println(allUsers.get(personName));
-                ((User) allUsers.get(personName)).toString();
+
+                System.out.println("\n"+allUsers.get(personName));
+
+
             }
         }
     }
@@ -285,12 +291,12 @@ public class Library {
     public void addNewUser() {
         Scanner myObj = new Scanner(System.in);  // Create a Scanner object
 
-        System.out.println("Enter the new user name  ");
+        System.out.println("Enter the user name:  ");
         String userName = myObj.nextLine();  // Read book title input
         if (allUsers.containsKey(userName)) {
-            System.out.println("Srry! the user already exsist");
+            System.out.println("Sorry! the user already exist");
         } else {
-            System.out.println("Enter the new user name  ");
+            System.out.println("Enter the password:  ");
             String password = myObj.nextLine();  // Read book title input
             allUsers.put(userName, new User(userName, password));
             System.out.println("the new user were added successfully !!!! ");
@@ -323,14 +329,16 @@ public class Library {
     }
 
     public void reminder(User currentUser) {
-        checkReturnDate(currentUser);
-        System.out.println("Hit anything to continue..");
-        task.scanString();
+        if (!currentUser.getBorrowedBooks().isEmpty()){
+            checkReturnDate(currentUser);
+            System.out.println("Hit anything to continue..");
+            task.scanString();
+        }
     }
 
     public LocalDate generateReturnDate() {
         LocalDate today = LocalDate.now();
-        return today.minusDays(3); //Tillfälligt för debug, ändra till plusWeeks(2) för 2 veckor
+        return today.minusDays(1); //Tillfälligt för debug, ändra till plusWeeks(2) för 2 veckor
     }
 
     public void checkReturnDate(User currentUser) {
