@@ -13,7 +13,7 @@ public class Library {
     private HashMap<String, Person> allUsers;
     private List<Book> allBooks;
     private Pattern namePattern = Pattern.compile("[a-zA-Z]+\\s[a-zA-Z]+|[a-zA-Z]+");
-    LoginPage login = new LoginPage();
+    //LoginPage login = new LoginPage();
 
     Task task = new Task();
     DocHandler docHandler = new DocHandler();
