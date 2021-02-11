@@ -26,7 +26,8 @@ public class Library {
         boolean running = true;
        do {
             try {
-            currentUser = login.login(allUsers);
+                currentUser = task.login(allUsers); //utan GuI, går att logga in och ut
+                //currentUser = login.login(allUsers); //med GuI, alfa, proof of concept
             if(currentUser instanceof User){
                 reminder((User) currentUser);
             }
