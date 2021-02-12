@@ -233,12 +233,9 @@ public class Library {
     }
 
     public void printBookList() {
-        for (Book book : allBooks) {
-            System.out.println("Title: " + book.getName());
-            System.out.println("Author: " + book.getAuthor());
-            System.out.println("Description " + book.getDescription());
-            System.out.println("Available: " + book.isAvailable() + "\n");
-        }
+
+        allBooks.forEach(book -> System.out.println("Title: " + book.getName()+"\nAuthor: "+book.getAuthor()+
+                "\nDescription: "+book.getDescription()+"\nAvaible: "+book.isAvailable()+"\n"));
 
 
     }
